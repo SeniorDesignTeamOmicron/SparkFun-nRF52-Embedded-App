@@ -75,10 +75,10 @@ void loop()
         //If 0x30 received turn off, if 0x31 turn on
         if(countSignal.value() == '0') {
           cntState = false;
-          Serial.println("Stopping counters.");
+          Serial.println("Counters disabled.");
         } else if(countSignal.value() == '1') {
           cntState = true;
-          Serial.println("Beggining counters.");
+          Serial.println("Counters enabled.");
         }
       }
       
