@@ -5,51 +5,64 @@
 
 
 
-//global var
+//BLE service, global var
 extern ble_os_t m_our_service;
 
 
-#define DEVICE_NAME                     "LogiStepsEmbedded"                     /**< Name of device. Will be included in the advertising data. */
-#define MANUFACTURER_NAME               "LogiSteps"                             /**< Manufacturer. Will be passed to Device Information Service. */
-#define APP_ADV_INTERVAL                300                                     /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
+#define DEVICE_NAME                     "LogiStepsEmbedded"              /**< Name of device. Will be included in the advertising data. */
+#define MANUFACTURER_NAME               "LogiSteps"                      /**< Manufacturer. Will be passed to Device Information Service. */
+#define APP_ADV_INTERVAL                300                              /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
 
-#define APP_ADV_DURATION                18000                                   /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
-#define APP_BLE_OBSERVER_PRIO           3                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
-#define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
+#define APP_ADV_DURATION                18000                            /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
+#define APP_BLE_OBSERVER_PRIO           3                                /**< Application's BLE observer priority. You shouldn't need to modify this value. */
+#define APP_BLE_CONN_CFG_TAG            1                                /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(100, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (0.1 seconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(200, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (0.2 second). */
-#define SLAVE_LATENCY                   0                                       /**< Slave latency. */
-#define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(100, UNIT_1_25_MS) /**< Minimum acceptable connection interval (0.1 seconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(200, UNIT_1_25_MS) /**< Maximum acceptable connection interval (0.2 second). */
+#define SLAVE_LATENCY                   0                                /**< Slave latency. */
+#define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)  /**< Connection supervisory timeout (4 seconds). */
 
-#define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(5000)                   /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
-#define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(30000)                  /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
-#define MAX_CONN_PARAMS_UPDATE_COUNT    3                                       /**< Number of attempts before giving up the connection parameter negotiation. */
+#define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(5000)            /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
+#define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(30000)           /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
+#define MAX_CONN_PARAMS_UPDATE_COUNT    3                                /**< Number of attempts before giving up the connection parameter negotiation. */
 
-#define SEC_PARAM_BOND                  1                                       /**< Perform bonding. */
-#define SEC_PARAM_MITM                  0                                       /**< Man In The Middle protection not required. */
-#define SEC_PARAM_LESC                  0                                       /**< LE Secure Connections not enabled. */
-#define SEC_PARAM_KEYPRESS              0                                       /**< Keypress notifications not enabled. */
-#define SEC_PARAM_IO_CAPABILITIES       BLE_GAP_IO_CAPS_NONE                    /**< No I/O capabilities. */
-#define SEC_PARAM_OOB                   0                                       /**< Out Of Band data not available. */
-#define SEC_PARAM_MIN_KEY_SIZE          7                                       /**< Minimum encryption key size. */
-#define SEC_PARAM_MAX_KEY_SIZE          16                                      /**< Maximum encryption key size. */
-
-
-NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
-NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
-BLE_ADVERTISING_DEF(m_advertising);                                             /**< Advertising module instance. */
-
-static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
+#define SEC_PARAM_BOND                  1                                /**< Perform bonding. */
+#define SEC_PARAM_MITM                  0                                /**< Man In The Middle protection not required. */
+#define SEC_PARAM_LESC                  0                                /**< LE Secure Connections not enabled. */
+#define SEC_PARAM_KEYPRESS              0                                /**< Keypress notifications not enabled. */
+#define SEC_PARAM_IO_CAPABILITIES       BLE_GAP_IO_CAPS_NONE             /**< No I/O capabilities. */
+#define SEC_PARAM_OOB                   0                                /**< Out Of Band data not available. */
+#define SEC_PARAM_MIN_KEY_SIZE          7                                /**< Minimum encryption key size. */
+#define SEC_PARAM_MAX_KEY_SIZE          16                               /**< Maximum encryption key size. */
 
 
-// Use UUIDs for service(s) used in your application.
-static ble_uuid_t m_adv_uuids[] = {                         /**< Universally unique service identifiers. */
+NRF_BLE_GATT_DEF(m_gatt);                                                /**< GATT module instance. */
+NRF_BLE_QWR_DEF(m_qwr);                                                  /**< Context for the Queued Write module.*/
+BLE_ADVERTISING_DEF(m_advertising);                                      /**< Advertising module instance. */
+
+static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                 /**< Handle of the current connection. */
+
+
+// UUIDs for service(s) used in application.
+static ble_uuid_t m_adv_uuids[] = {     
+    // Only one service         using vendor specific UUID
     {BLE_UUID_OUR_SERVICE_UUID, BLE_UUID_TYPE_VENDOR_BEGIN}
 };
 
+/**@brief Function for starting advertising.
+ *
+ * @param[in] erase_bonds Boolean on whether or not to erase the devices bonds
+ */
+void advertising_start(bool erase_bonds) {
+    if (erase_bonds == true) {
+        delete_bonds();
+        // Advertising is started by PM_EVT_PEERS_DELETED_SUCEEDED event
+    } else {
+        ret_code_t err_code = ble_advertising_start(&m_advertising, BLE_ADV_MODE_FAST);
 
-void advertising_start(bool erase_bonds);
+        APP_ERROR_CHECK(err_code);
+    }
+}
 
 
 /**@brief Function for handling Peer Manager events.
@@ -138,7 +151,7 @@ void pm_evt_handler(pm_evt_t const * p_evt) {
         case PM_EVT_PEER_DELETE_SUCCEEDED:
         case PM_EVT_LOCAL_DB_CACHE_APPLIED:
         case PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED:
-            // This can happen when the local DB has changed.
+        // This can happen when the local DB has changed.
         case PM_EVT_SERVICE_CHANGED_IND_SENT:
         case PM_EVT_SERVICE_CHANGED_IND_CONFIRMED:
         default:
@@ -212,7 +225,7 @@ void services_init(void) {
     err_code = nrf_ble_qwr_init(&m_qwr, &qwr_init);
     APP_ERROR_CHECK(err_code);
 
-    //FROM_SERVICE_TUTORIAL: Add code to initialize the services used by the application.
+    // Initialize the service used by the application.
     our_service_init(&m_our_service);
 }
 
@@ -280,12 +293,6 @@ void on_adv_evt(ble_adv_evt_t ble_adv_evt) {
     switch (ble_adv_evt) {
         case BLE_ADV_EVT_FAST:
             NRF_LOG_INFO("Fast advertising.");
-            //err_code = bsp_indication_set(BSP_INDICATE_ADVERTISING);
-            //APP_ERROR_CHECK(err_code);
-            break;
-
-        case BLE_ADV_EVT_IDLE:
-            sleep_mode_enter();
             break;
 
         default:
@@ -306,15 +313,10 @@ void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context) {
     switch (p_ble_evt->header.evt_id) {
         case BLE_GAP_EVT_DISCONNECTED:
             NRF_LOG_INFO("Disconnected.");
-            // LED indication will be changed when advertising starts.
- 
-
             break;
 
         case BLE_GAP_EVT_CONNECTED:
             NRF_LOG_INFO("Connected.");
-            //err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
-            //APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             err_code = nrf_ble_qwr_conn_handle_assign(&m_qwr, m_conn_handle);
             APP_ERROR_CHECK(err_code);
@@ -350,7 +352,6 @@ void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context) {
             break;
 
         default:
-            // No implementation needed.
             break;
     }
 
@@ -461,26 +462,20 @@ void advertising_init(void) {
 }
 
 
-/**@brief Function for starting advertising.
+
+
+//Below is all stuff for 'our service' 
+
+/**@brief Function for handling BLE Stack events related to our service and characteristic.
+ *
+ * @details Handles all events from the BLE stack of interest to Our Service.
+ *
+ * @param[in]   p_our_service   Our Service structure.
+ * @param[in]   p_ble_evt       Event received from the BLE stack.
  */
-void advertising_start(bool erase_bonds) {
-    if (erase_bonds == true) {
-        delete_bonds();
-        // Advertising is started by PM_EVT_PEERS_DELETED_SUCEEDED event
-    } else {
-        ret_code_t err_code = ble_advertising_start(&m_advertising, BLE_ADV_MODE_FAST);
-
-        APP_ERROR_CHECK(err_code);
-    }
-}
-
-
-
-//our service stuff
-// ALREADY_DONE_FOR_YOU: Declaration of a function that will take care of some housekeeping of ble connections related to our service and characteristic
 void ble_our_service_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context) {
-    ble_os_t* p_our_service =(ble_os_t*) p_context;  
-    // OUR_JOB: Step 3.D Implement switch case handling BLE events related to our service. 
+    ble_os_t* p_our_service = (ble_os_t*) p_context;  
+    // Handle BLE events related to our service. 
     switch (p_ble_evt->header.evt_id) {
         case BLE_GAP_EVT_CONNECTED:
             p_our_service->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
@@ -493,179 +488,118 @@ void ble_our_service_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context) {
     }
 }
 
-/**@brief Function for adding our new characterstic to "Our service" that we initiated in the previous tutorial. 
- *
- * @param[in]   p_our_service        Our Service structure.
- *
- */
-static uint32_t our_data_char_add(ble_os_t* p_our_service) {
-    // OUR_JOB: Step 2.A, Add a custom characteristic UUID
-    uint32_t            err_code;
-    ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = BLE_UUID_OUR_BASE_UUID;
-    char_uuid.uuid      = BLE_UUID_DATA_CHARACTERISTIC_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);  
-
-    // OUR_JOB: Step 2.F Add read/write properties to our characteristic
-    ble_gatts_char_md_t char_md;
-    memset(&char_md, 0, sizeof(char_md));
-    char_md.char_props.read = 1;
-    char_md.char_props.write = 1;
-
-    // OUR_JOB: Step 3.A, Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure
-    ble_gatts_attr_md_t cccd_md;
-    memset(&cccd_md, 0, sizeof(cccd_md));
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
-    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;
-    char_md.p_cccd_md           = &cccd_md;
-    char_md.char_props.notify   = 1;
-
-    // OUR_JOB: Step 2.B, Configure the attribute metadata
-    ble_gatts_attr_md_t attr_md;
-    memset(&attr_md, 0, sizeof(attr_md));  
-    attr_md.vloc = BLE_GATTS_VLOC_STACK;
-
-    // OUR_JOB: Step 2.G, Set read/write security levels to our characteristic
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
-
-    // OUR_JOB: Step 2.C, Configure the characteristic value attribute
-    ble_gatts_attr_t    attr_char_value;
-    memset(&attr_char_value, 0, sizeof(attr_char_value));
-    attr_char_value.p_uuid    = &char_uuid;
-    attr_char_value.p_attr_md = &attr_md;
-
-    // OUR_JOB: Step 2.H, Set characteristic length in number of bytes
-    attr_char_value.max_len   = 2;
-    attr_char_value.init_len  = 2;
-    uint8_t value[2]          = {0xFF,0xFF};
-    attr_char_value.p_value   = value;
-
-    // OUR_JOB: Step 2.E, Add our new characteristic to the service
-    err_code = sd_ble_gatts_characteristic_add(p_our_service->service_handle,
-                                              &char_md,
-                                              &attr_char_value,
-                                              &p_our_service->data_handle);
-    APP_ERROR_CHECK(err_code);
-
-    return NRF_SUCCESS;
-}
-
-static uint32_t our_time_char_add(ble_os_t* p_our_service) {
-    uint32_t            err_code;
-    ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = BLE_UUID_OUR_BASE_UUID;
-    char_uuid.uuid      = BLE_UUID_TIME_CHARACTERISTIC_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);  
-
-    // OUR_JOB: Step 2.F Add read/write properties to our characteristic
-    ble_gatts_char_md_t char_md;
-    memset(&char_md, 0, sizeof(char_md));
-    char_md.char_props.read = 1;
-    char_md.char_props.write = 1;
-
-    // OUR_JOB: Step 3.A, Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure
-    ble_gatts_attr_md_t cccd_md;
-    memset(&cccd_md, 0, sizeof(cccd_md));
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
-    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;
-    char_md.p_cccd_md           = &cccd_md;
-    char_md.char_props.notify   = 1;
-
-    // OUR_JOB: Step 2.B, Configure the attribute metadata
-    ble_gatts_attr_md_t attr_md;
-    memset(&attr_md, 0, sizeof(attr_md));  
-    attr_md.vloc = BLE_GATTS_VLOC_STACK;
-
-    // OUR_JOB: Step 2.G, Set read/write security levels to our characteristic
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
-
-    // OUR_JOB: Step 2.C, Configure the characteristic value attribute
-    ble_gatts_attr_t    attr_char_value;
-    memset(&attr_char_value, 0, sizeof(attr_char_value));
-    attr_char_value.p_uuid    = &char_uuid;
-    attr_char_value.p_attr_md = &attr_md;
-
-    // OUR_JOB: Step 2.H, Set characteristic length in number of bytes
-    attr_char_value.max_len   = 4;
-    attr_char_value.init_len  = 4;
-    uint8_t value[4]          = {0x00,0x00,0x00,0x00};
-    attr_char_value.p_value   = value;
-
-    // OUR_JOB: Step 2.E, Add our new characteristic to the service
-    err_code = sd_ble_gatts_characteristic_add(p_our_service->service_handle,
-                                              &char_md,
-                                              &attr_char_value,
-                                              &p_our_service->time_handle);
-    APP_ERROR_CHECK(err_code);
-
-    return NRF_SUCCESS;
-}
 
 /**@brief Function for initiating our new service.
  *
  * @param[in]   p_our_service        Our Service structure.
  *
  */
-void our_service_init(ble_os_t * p_our_service) {
-    uint32_t   err_code; // Variable to hold return codes from library and softdevice functions
+void our_service_init(ble_os_t* p_our_service) {
+    uint32_t   err_code;
 
-    // FROM_SERVICE_TUTORIAL: Declare 16-bit service and 128-bit base UUIDs and add them to the BLE stack
+    // Declare 16-bit service and 128-bit base UUIDs and add them to the BLE stack
     ble_uuid_t        service_uuid;
     ble_uuid128_t     base_uuid = BLE_UUID_OUR_BASE_UUID;
     service_uuid.uuid = BLE_UUID_OUR_SERVICE_UUID;
     err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
     APP_ERROR_CHECK(err_code);    
     
-    // OUR_JOB: Step 3.B, Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
+    // Set our service connection handle to default value
     p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
 
-    // FROM_SERVICE_TUTORIAL: Add our service
+    // Add our service
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY,
                                         &service_uuid,
                                         &p_our_service->service_handle);
     
     APP_ERROR_CHECK(err_code);
     
-    // OUR_JOB: Call the function our_char_add() to add our new characteristic to the service. 
-    our_time_char_add(p_our_service);
-    our_data_char_add(p_our_service);
+    // Add our characteristics
+    uint8_t val[4] = {0x00, 0x00, 0x00, 0x00};
+    our_characteristic_add(p_our_service, BLE_UUID_TIME_CHARACTERISTIC_UUID, 4, val, &p_our_service->time_handle);
+    uint8_t val2[2] = {0x00, 0x00};
+    our_characteristic_add(p_our_service, BLE_UUID_DATA_CHARACTERISTIC_UUID, 2, val2, &p_our_service->data_handle);
 }
 
-// ALREADY_DONE_FOR_YOU: Function to be called when updating characteristic value
-void our_data_characteristic_update(ble_os_t* p_our_service, int32_t *char_value) {
-    // OUR_JOB: Step 3.E, Update characteristic value
+
+/**@brief Function for adding new characterstic to our service
+ *
+ * @param[in]   p_our_service        Our Service structure.
+ * @param[in]   myUUID               The UUID of characteristic to add
+ * @param[in]   maxLen               The max length, in bytes, of the characteristics data
+ * @param[in]   initData             The inital data of the characteristic
+ * @param[in]   charHandle           The handle of the characteristic to add
+ */
+void our_characteristic_add(ble_os_t* p_our_service, uint16_t my_UUID, uint16_t max_len, uint8_t init_data[], ble_gatts_char_handles_t* char_handle) {
+    // Add a custom characteristic UUID
+    uint32_t            err_code;
+    ble_uuid_t          char_uuid;
+    ble_uuid128_t       base_uuid = BLE_UUID_OUR_BASE_UUID;
+    char_uuid.uuid      = my_UUID;
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
+    APP_ERROR_CHECK(err_code);  
+
+    // Add read/write properties to our characteristic
+    ble_gatts_char_md_t char_md;
+    memset(&char_md, 0, sizeof(char_md));
+    char_md.char_props.read = 1;
+    char_md.char_props.write = 1;
+
+    // Configure Client Characteristic Configuration Descriptor(cccd) metadata(md) and add to char_md structure
+    ble_gatts_attr_md_t cccd_md;
+    memset(&cccd_md, 0, sizeof(cccd_md));
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;
+    char_md.p_cccd_md           = &cccd_md;
+    char_md.char_props.notify   = 1;
+
+    // Configure the attribute metadata
+    ble_gatts_attr_md_t attr_md;
+    memset(&attr_md, 0, sizeof(attr_md));  
+    attr_md.vloc = BLE_GATTS_VLOC_STACK;
+
+    // Set read/write security levels to our characteristic
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
+
+    // Configure the characteristic value attribute
+    ble_gatts_attr_t    attr_char_value;
+    memset(&attr_char_value, 0, sizeof(attr_char_value));
+    attr_char_value.p_uuid    = &char_uuid;
+    attr_char_value.p_attr_md = &attr_md;
+    // Set characteristic length in number of bytes
+    attr_char_value.max_len   = max_len;
+    attr_char_value.init_len  = max_len;
+    // Set characteristic inital value
+    attr_char_value.p_value   = init_data;
+
+    // Add characteristic to the service
+    err_code = sd_ble_gatts_characteristic_add(p_our_service->service_handle,
+                                              &char_md,
+                                              &attr_char_value,
+                                              char_handle);
+    APP_ERROR_CHECK(err_code);
+}
+
+/**@brief Function for updating and sending new characteristic values
+ *
+ * @details The application calls this function whenever our timer_timeout_handler triggers
+ *
+ * @param[in]   p_our_service            Our Service structure.
+ * @param[in]   length                   The length, in bytes, of the new characteristic value 
+ * @param[in]   characteristic_value     New characteristic value.
+ * @param[in]   char_handle              The handle of the characteristic being updated
+ */
+void our_characteristic_update(ble_os_t* p_our_service, uint16_t length, int32_t *char_value, ble_gatts_char_handles_t char_handle) {
     if(p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID) {
-        uint16_t                len = 2;
         ble_gatts_hvx_params_t  hvx_params;
         memset(&hvx_params, 0, sizeof(hvx_params));
 
-        hvx_params.handle = p_our_service->data_handle.value_handle;
+        hvx_params.handle = char_handle.value_handle;
         hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
         hvx_params.offset = 0;
-        hvx_params.p_len  = &len;
-        hvx_params.p_data = (uint8_t*) char_value;
-
-        sd_ble_gatts_hvx(p_our_service->conn_handle, &hvx_params);
-    }
-}
-
-void our_time_characteristic_update(ble_os_t* p_our_service, int32_t *char_value) {
-    // OUR_JOB: Step 3.E, Update characteristic value
-    if(p_our_service->conn_handle != BLE_CONN_HANDLE_INVALID) {
-        uint16_t                len = 2;
-        ble_gatts_hvx_params_t  hvx_params;
-        memset(&hvx_params, 0, sizeof(hvx_params));
-
-        hvx_params.handle = p_our_service->time_handle.value_handle;
-        hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-        hvx_params.offset = 0;
-        hvx_params.p_len  = &len;
+        hvx_params.p_len  = &length;
         hvx_params.p_data = (uint8_t*) char_value;
 
         sd_ble_gatts_hvx(p_our_service->conn_handle, &hvx_params);

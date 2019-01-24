@@ -15,15 +15,18 @@
 
 #include "nrf_log.h"
 
-// FROM_SERVICE_TUTORIAL: Defining 16-bit service and 128-bit base UUIDs
-#define BLE_UUID_OUR_BASE_UUID                    {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
-#define BLE_UUID_OUR_SERVICE_UUID                 0xDA1A // Just a random, but recognizable value
-
-// ALREADY_DONE_FOR_YOU: Defining 16-bit characteristic UUID
-#define BLE_UUID_DATA_CHARACTERISTIC_UUID          0x1111 // Just a random, but recognizable value
+// Define 128-bit base UUID
+#define BLE_UUID_OUR_BASE_UUID                    {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}}
+// Define 16-bit service UUID
+#define BLE_UUID_OUR_SERVICE_UUID                 0x0000 
+// Define 16-bit characteristic UUIDS
+#define BLE_UUID_DATA_CHARACTERISTIC_UUID         0x1111
 #define BLE_UUID_TIME_CHARACTERISTIC_UUID         0x2222 
 
-
+/**@brief Function for starting advertising.
+ *
+ * @param[in] erase_bonds Boolean on whether or not to erase the devices bonds
+ */
 void advertising_start(bool erase_bonds);
 
 
@@ -127,21 +130,19 @@ void delete_bonds(void);
 void advertising_init(void);
 
 
-/**@brief Function for starting advertising.
- */
-void advertising_start(bool erase_bonds);
 
-
-
+//Below is all stuff for our service specifically
 
 // This structure contains various status information for our service. 
 // The name is based on the naming convention used in Nordics SDKs. 
 // 'ble’ indicates that it is a Bluetooth Low Energy relevant structure and 
-// ‘os’ is short for Our Service). 
+// ‘os’ is short for our service. 
 typedef struct {
-    uint16_t                    conn_handle;    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection).*/
-    uint16_t                    service_handle; /**< Handle of Our Service (as provided by the BLE stack). */
-    // OUR_JOB: Step 2.D, Add handles for the characteristic attributes to our struct
+    // Handle for current connection (provided by BLE stack)
+    uint16_t                    conn_handle;    
+    // Handle for the service (provided by BLE stack)
+    uint16_t                    service_handle; 
+    // Handles for the characteristics of our service
     ble_gatts_char_handles_t    data_handle;
     ble_gatts_char_handles_t    time_handle;
 }ble_os_t;
@@ -153,10 +154,9 @@ typedef struct {
  * @details Handles all events from the BLE stack of interest to Our Service.
  *
  * @param[in]   p_our_service       Our Service structure.
- * @param[in]   p_ble_evt  Event received from the BLE stack.
+ * @param[in]   p_ble_evt           Event received from the BLE stack.
  */
 void ble_our_service_on_ble_evt(ble_evt_t const* p_ble_evt, void* p_context);
-
 
 
 /**@brief Function for initializing our new service.
@@ -166,23 +166,27 @@ void ble_our_service_on_ble_evt(ble_evt_t const* p_ble_evt, void* p_context);
 void our_service_init(ble_os_t* p_our_service);
 
 
+/**@brief Function for adding new characterstic to our service
+ *
+ * @param[in]   p_our_service        Our Service structure.
+ * @param[in]   myUUID               The UUID of characteristic to add
+ * @param[in]   maxLen               The max length, in bytes, of the characteristics data
+ * @param[in]   initData             The inital data of the characteristic
+ * @param[in]   charHandle           The handle of the characteristic to add
+ */
+void our_characteristic_add(ble_os_t* p_our_service, uint16_t my_UUID, uint16_t maxLen, uint8_t init_data[], ble_gatts_char_handles_t* char_handle);
+
 
 /**@brief Function for updating and sending new characteristic values
  *
  * @details The application calls this function whenever our timer_timeout_handler triggers
  *
- * @param[in]   p_our_service                     Our Service structure.
+ * @param[in]   p_our_service            Our Service structure.
+ * @param[in]   length                   The length, in bytes, of the new characteristic value 
  * @param[in]   characteristic_value     New characteristic value.
+ * @param[in]   char_handle              The handle of the characteristic being updated
  */
-void our_data_characteristic_update(ble_os_t *p_our_service, int32_t *char_value);
+void our_characteristic_update(ble_os_t* p_our_service, uint16_t length, int32_t *char_value, ble_gatts_char_handles_t char_handle);
 
-/**@brief Function for updating and sending new characteristic values
- *
- * @details The application calls this function whenever our timer_timeout_handler triggers
- *
- * @param[in]   p_our_service                     Our Service structure.
- * @param[in]   characteristic_value     New characteristic value.
- */
-void our_time_characteristic_update(ble_os_t *p_our_service, int32_t *char_value);
 
 #endif  /* _ OUR_BLE_H__ */

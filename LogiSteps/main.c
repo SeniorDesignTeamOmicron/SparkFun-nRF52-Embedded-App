@@ -20,16 +20,11 @@
 
 
 
-#define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
+#define DEAD_BEEF 0xDEADBEEF /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
 
-// FROM_SERVICE_TUTORIAL: Declare a service structure for our application
+// Declare a service structure
 ble_os_t m_our_service;
-
-
-// OUR_JOB: Step 3.G, Declare an app_timer id variable and define our timer interval and define a timer interval
-//APP_TIMER_DEF(m_our_char_timer_id);
-//#define OUR_CHAR_TIMER_INTERVAL   APP_TIMER_TICKS(1000)
 
 
 /**@brief Callback function for asserts in the SoftDevice.
@@ -48,13 +43,6 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name) {
 }
 
 
-// ALREADY_DONE_FOR_YOU: This is a timer event handler
-//static void timer_timeout_handler(void * p_context) {
-    // OUR_JOB: Step 3.F, Update temperature and characteristic value.
-
-//}
-
-
 /**@brief Function for the Timer initialization.
  *
  * @details Initializes the timer module. This creates and starts application timers.
@@ -63,18 +51,13 @@ void timers_init(void) {
     // Initialize timer module.
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
-
-
-    // OUR_JOB: Step 3.H, Initiate our timer
-    // app_timer_create(&m_our_char_timer_id, APP_TIMER_MODE_REPEATED, timer_timeout_handler);
 }
 
 
 /**@brief Function for starting timers.
  */
 void application_timers_start(void) {
-    // OUR_JOB: Step 3.I, Start our timer 
-    //app_timer_start(m_our_char_timer_id, OUR_CHAR_TIMER_INTERVAL, NULL);
+    
 }
 
 
@@ -151,7 +134,7 @@ int main(void) {
 
 
     // Start execution.
-    NRF_LOG_INFO("OurCharacteristics tutorial started.");
+    NRF_LOG_INFO("LogiSteps started.");
     advertising_start(erase_bonds);
     saadc_sampling_event_enable();
 
