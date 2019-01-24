@@ -470,10 +470,10 @@ void advertising_init(void) {
  *
  * @details Handles all events from the BLE stack of interest to Our Service.
  *
- * @param[in]   p_our_service   Our Service structure.
+ * @param[in]   p_context   Our Service structure.
  * @param[in]   p_ble_evt       Event received from the BLE stack.
  */
-void ble_our_service_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context) {
+void ble_our_service_on_ble_evt(ble_evt_t const* p_ble_evt, void* p_context) {
     ble_os_t* p_our_service = (ble_os_t*) p_context;  
     // Handle BLE events related to our service. 
     switch (p_ble_evt->header.evt_id) {
@@ -583,8 +583,6 @@ void our_characteristic_add(ble_os_t* p_our_service, uint16_t my_UUID, uint16_t 
 }
 
 /**@brief Function for updating and sending new characteristic values
- *
- * @details The application calls this function whenever our timer_timeout_handler triggers
  *
  * @param[in]   p_our_service            Our Service structure.
  * @param[in]   length                   The length, in bytes, of the new characteristic value 
