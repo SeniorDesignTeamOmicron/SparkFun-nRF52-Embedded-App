@@ -24,6 +24,8 @@
   <ProjectSessionItem path="LogiSteps;LogiSteps;Application"/>
   <ProjectSessionItem path="LogiSteps;LogiSteps;nRF_Drivers"/>
   <ProjectSessionItem path="LogiSteps;LogiSteps;nRF_Libraries"/>
+  <ProjectSessionItem path="LogiSteps;LogiSteps;nRF_Log"/>
+  <ProjectSessionItem path="LogiSteps;LogiSteps;nRF_SoftDevice"/>
  </Project>
  <Register1>
   <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;CPU/r0;CPU/r1;CPU/r2;CPU/r3;CPU/r4;CPU/r5;CPU/r6;CPU/r7;CPU/r8;CPU/r9;CPU/r10;CPU/r11;CPU/r12;CPU/sp(r13);CPU/lr(r14);CPU/pc(r15);CPU/xpsr;CPU/msp;CPU/psp;CPU/cfbp" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context" name="LogiSteps" decimalNodes="" octalNodes="" unsignedNodes=""/>
@@ -56,12 +58,10 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="14" y="144" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="118" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="32" y="73" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../our_saadc.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="6" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../our_saadc.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="30" y="553" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../our_ble.c" selected="1" top="543" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="95" y="165" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../our_ble.h" selected="0" top="149" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="21" y="208" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/nrfx_common.h" selected="0" top="177" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="6" y="139" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="1" top="120" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="11" y="5133" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" selected="0" top="5114" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="81" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../our_saadc.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="18" y="487" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../our_ble.c" selected="0" top="469" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="LogiSteps" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/nRF5_SDK_15.2.0/examples/SparkFun-nRF52-Embedded-App/LogiSteps" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="LogiSteps" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/nRF5_SDK_15.2.0/examples/SparkFun-nRF52-Embedded-App/LogiSteps" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>

@@ -1,5 +1,5 @@
-Output/LogiSteps\ Release/Obj/nrfx_timer.o: \
- C:\nRF5_SDK_15.2.0\modules\nrfx\drivers\src\nrfx_timer.c \
+Output/LogiSteps\ Release/Obj/nrfx_rtc.o: \
+ C:\nRF5_SDK_15.2.0\modules\nrfx\drivers\src\nrfx_rtc.c \
  ../../../../../../modules/nrfx/nrfx.h \
  ../../../../../../integration/nrfx/nrfx_config.h ../config/sdk_config.h \
  ../../../../../../modules/nrfx/drivers/nrfx_common.h \
@@ -46,4 +46,19 @@ Output/LogiSteps\ Release/Obj/nrfx_timer.o: \
  ../../../../../../components/libraries/util/sdk_errors.h \
  ../../../../../../components/libraries/util/sdk_resources.h \
  ../../../../../../components/softdevice/s132/headers/nrf_sd_def.h \
- ../../../../../../modules/nrfx/drivers/nrfx_errors.h
+ ../../../../../../modules/nrfx/drivers/nrfx_errors.h \
+ ../../../../../../modules/nrfx/drivers/include/nrfx_rtc.h \
+ ../../../../../../modules/nrfx/hal/nrf_rtc.h \
+ ../../../../../../integration/nrfx/nrfx_log.h \
+ ../../../../../../components/libraries/log/nrf_log.h \
+ ../../../../../../components/libraries/util/sdk_common.h \
+ C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/string.h \
+ ../../../../../../components/libraries/util/sdk_os.h \
+ ../../../../../../components/libraries/util/app_util.h \
+ ../../../../../../components/libraries/util/sdk_macros.h \
+ ../../../../../../components/libraries/experimental_section_vars/nrf_section.h \
+ ../../../../../../components/libraries/strerror/nrf_strerror.h \
+ ../../../../../../components/libraries/log/src/nrf_log_internal.h \
+ ../../../../../../components/libraries/log/nrf_log_instance.h \
+ ../../../../../../components/libraries/log/nrf_log_types.h \
+ ../../../../../../components/libraries/log/nrf_log_types.h

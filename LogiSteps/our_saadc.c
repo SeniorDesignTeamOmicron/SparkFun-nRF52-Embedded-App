@@ -1,15 +1,21 @@
 #include "our_saadc.h"
 
+//TESTING INCLUDE
+#include "nrf_gpio.h"
+
 #define SAMPLES_IN_BUFFER 1
-volatile uint8_t state = 1;
+
+#define RTC_FREQUENCY 4095              //Determines the RTC frequency and prescaler
+#define COMPARE_COUNTERTIME  (1UL)      //Get Compare event COMPARE_TIME seconds after the counter starts from 0.
 
 
-static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1); // Timer to be used with saadc
+static const nrf_drv_rtc_t   m_rtc = NRF_DRV_RTC_INSTANCE(2);  // RTC to be used with saadc
 static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER]; // saadc value buffer
 static nrf_ppi_channel_t     m_ppi_channel;                       // saadc channel to use
 
 //BLE service, global var
 extern ble_os_t m_our_service;
+
 
 
 /**@brief Initializes the saadc peripheral
@@ -34,52 +40,56 @@ void saadc_init(void) {
 
     err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_IN_BUFFER);
     APP_ERROR_CHECK(err_code);
+
+}
+
+
+/**@brief Currently just empty event handler that is needed for rtc init, even though this handler is not used.     
+ */
+void rtc_handler(nrf_drv_rtc_int_type_t int_type) {
+
 }
 
 
 /**@brief Initializes the saadc sampling event.
- *
- * @details Sets sampling event with timer1(defined in m_timer init above), sets events to occur every 1000ms        
  */
 void saadc_sampling_event_init(void) {
     ret_code_t err_code;
+    
+    //err_code = nrf_drv_clock_init();
+    //APP_ERROR_CHECK(err_code);
+    //nrf_drv_clock_lfclk_request(NULL);
 
+    //Init ppi
     err_code = nrf_drv_ppi_init();
     APP_ERROR_CHECK(err_code);
 
-    nrf_drv_timer_config_t timer_cfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
-    timer_cfg.bit_width = NRF_TIMER_BIT_WIDTH_32;
-    err_code = nrf_drv_timer_init(&m_timer, &timer_cfg, timer_handler);
+    //Init rtc
+    nrf_drv_rtc_config_t rtc_config = NRF_DRV_RTC_DEFAULT_CONFIG;
+    rtc_config.prescaler = RTC_FREQUENCY;
+    err_code = nrf_drv_rtc_init(&m_rtc, &rtc_config, rtc_handler);
     APP_ERROR_CHECK(err_code);
 
-    /* setup m_timer for compare event every 1000ms */
-    uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer, 1000);
-    nrf_drv_timer_extended_compare(&m_timer,
-                                   NRF_TIMER_CC_CHANNEL0,
-                                   ticks,
-                                   NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
-                                   false);
-    nrf_drv_timer_enable(&m_timer);
+    //Set compare channel 2 to trigger 
+    err_code = nrf_drv_rtc_cc_set(&m_rtc,2,COMPARE_COUNTERTIME * 8,false);
+    APP_ERROR_CHECK(err_code);
 
-    uint32_t timer_compare_event_addr = nrf_drv_timer_compare_event_address_get(&m_timer,
-                                                                                NRF_TIMER_CC_CHANNEL0);
-    uint32_t saadc_sample_task_addr   = nrf_drv_saadc_sample_task_get();
+    //nrf_drv_rtc_tick_enable(&m_rtc, true);
+    //Power on RTC instance
+    nrf_drv_rtc_enable(&m_rtc);
+
+    uint32_t rtc_compare_event_addr = nrf_drv_rtc_event_address_get(&m_rtc, NRF_RTC_EVENT_COMPARE_2);
+    uint32_t rtc_clear_task_addr = nrf_drv_rtc_task_address_get(&m_rtc, NRF_RTC_TASK_CLEAR);
+    uint32_t saadc_sample_event_addr = nrf_drv_saadc_sample_task_get();
 
     /* setup ppi channel so that timer compare event is triggering sample task in SAADC */
     err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel);
     APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_ppi_channel_assign(m_ppi_channel,
-                                          timer_compare_event_addr,
-                                          saadc_sample_task_addr);
+    err_code = nrf_drv_ppi_channel_assign(m_ppi_channel, rtc_compare_event_addr, saadc_sample_event_addr);
     APP_ERROR_CHECK(err_code);
-}
-
-
-/**@brief Currently just empty event handler that is needed for timer1 init, even though this handler is not used.     
- */
-void timer_handler(nrf_timer_event_t event_type, void * p_context) {
-
+    err_code = nrf_drv_ppi_channel_fork_assign(m_ppi_channel, rtc_clear_task_addr);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -99,7 +109,8 @@ int thing = 0;
  *
  * @param p_event   The saadc event that has taken place
  */
-void saadc_event(nrf_drv_saadc_evt_t const * p_event) {
+void saadc_event(nrf_drv_saadc_evt_t const* p_event) {
+     NRF_LOG_INFO("in saadc event");
     if (p_event->type == NRF_DRV_SAADC_EVT_DONE) {
         ret_code_t err_code;
 
@@ -116,6 +127,13 @@ void saadc_event(nrf_drv_saadc_evt_t const * p_event) {
             our_characteristic_update(&m_our_service, 2, &data, m_our_service.data_handle);
             thing++;
             our_characteristic_update(&m_our_service, 4, &thing, m_our_service.time_handle);
+            
+            //TESTING
+            //if(thing == 20) {
+              //ret_code_t err_code = nrf_drv_ppi_channel_disable(m_ppi_channel);
+              //APP_ERROR_CHECK(err_code);
+              //nrf_drv_rtc_disable(&m_rtc);
+            //}
         }
     }
 }

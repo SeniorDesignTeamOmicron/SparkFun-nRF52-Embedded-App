@@ -11,7 +11,8 @@ extern ble_os_t m_our_service;
 
 #define DEVICE_NAME                     "LogiStepsEmbedded"              /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "LogiSteps"                      /**< Manufacturer. Will be passed to Device Information Service. */
-#define APP_ADV_INTERVAL                300                              /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
+//#define APP_ADV_INTERVAL                300                              /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
+#define APP_ADV_INTERVAL                1600                            //should set adv interval to 1 second
 
 #define APP_ADV_DURATION                18000                            /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
 #define APP_BLE_OBSERVER_PRIO           3                                /**< Application's BLE observer priority. You shouldn't need to modify this value. */
@@ -479,6 +480,8 @@ void ble_our_service_on_ble_evt(ble_evt_t const* p_ble_evt, void* p_context) {
     switch (p_ble_evt->header.evt_id) {
         case BLE_GAP_EVT_CONNECTED:
             p_our_service->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
+            //On connect enable saadc sample
+            //saadc_sampling_event_enable();
             break;
         case BLE_GAP_EVT_DISCONNECTED:
             p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;

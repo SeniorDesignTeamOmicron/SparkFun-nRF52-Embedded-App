@@ -4,7 +4,7 @@
 
 #include "nrf_drv_saadc.h"
 #include "nrf_drv_ppi.h"
-#include "nrf_drv_timer.h"
+#include "nrf_drv_rtc.h"
 #include "nrf_log.h"
 
 #include "our_ble.h"
@@ -20,15 +20,13 @@ void saadc_init(void);
 
 /*
 *@brief Initializes the saadc sampling event.
- *
- * @details Sets sampling event with timer1(defined in m_timer init above), sets events to occur every 1000ms        
  */
 void saadc_sampling_event_init(void);
 
 
-/**@brief Currently just empty event handler that is needed for timer1 init, even though this handler is not used.     
+/**@brief Currently just empty event handler that is needed for rtc init, even though this handler is not used.     
  */
-void timer_handler(nrf_timer_event_t event_type, void * p_context);
+void rtc_handler(nrf_drv_rtc_int_type_t int_type);
 
 
 /**@brief Enables the sampling event      

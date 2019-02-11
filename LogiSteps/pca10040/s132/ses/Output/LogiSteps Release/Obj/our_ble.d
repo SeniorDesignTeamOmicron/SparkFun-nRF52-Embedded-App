@@ -1,6 +1,6 @@
 Output/LogiSteps\ Release/Obj/our_ble.o: \
- C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_ble.c \
- C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_ble.h \
+ C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_ble.c \
+ C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_ble.h \
  ../../../../../../components/softdevice/s132/headers/ble.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stdint.h \
  ../../../../../../components/softdevice/s132/headers/nrf_svc.h \

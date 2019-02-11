@@ -1,5 +1,5 @@
 Output/LogiSteps\ Release/Obj/main.o: \
- C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\main.c \
+ C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\main.c \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stdbool.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/string.h \
@@ -70,7 +70,7 @@ Output/LogiSteps\ Release/Obj/main.o: \
  ../../../../../../components/softdevice/s132/headers/nrf_nvic.h \
  ../../../../../../components/libraries/util/app_error.h \
  ../../../../../../components/libraries/log/nrf_log_default_backends.h \
- C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_ble.h \
+ C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_ble.h \
  ../../../../../../components/ble/ble_advertising/ble_advertising.h \
  ../../../../../../components/softdevice/s132/headers/ble_gap.h \
  ../../../../../../components/softdevice/s132/headers/ble_gattc.h \
@@ -90,7 +90,7 @@ Output/LogiSteps\ Release/Obj/main.o: \
  ../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.h \
  ../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.h \
  ../../../../../../components/ble/common/ble_srv_common.h \
- C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_saadc.h \
+ C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_saadc.h \
  ../../../../../../integration/nrfx/legacy/nrf_drv_saadc.h \
  ../../../../../../modules/nrfx/drivers/include/nrfx_saadc.h \
  ../../../../../../modules/nrfx/nrfx.h \
@@ -110,6 +110,8 @@ Output/LogiSteps\ Release/Obj/main.o: \
  ../../../../../../integration/nrfx/legacy/nrf_drv_ppi.h \
  ../../../../../../modules/nrfx/drivers/include/nrfx_ppi.h \
  ../../../../../../modules/nrfx/hal/nrf_ppi.h \
- ../../../../../../integration/nrfx/legacy/nrf_drv_timer.h \
- ../../../../../../modules/nrfx/drivers/include/nrfx_timer.h \
- ../../../../../../modules/nrfx/hal/nrf_timer.h
+ ../../../../../../integration/nrfx/legacy/nrf_drv_rtc.h \
+ ../../../../../../modules/nrfx/drivers/include/nrfx_rtc.h \
+ ../../../../../../modules/nrfx/hal/nrf_rtc.h \
+ ../../../../../../modules/nrfx/hal/nrf_gpio.h \
+ ../../../../../../components/libraries/delay/nrf_delay.h

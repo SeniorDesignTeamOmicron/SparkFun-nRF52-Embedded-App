@@ -18,6 +18,9 @@
 #include "our_ble.h"
 #include "our_saadc.h"
 
+//TESTING
+#include "nrf_gpio.h"
+#include "nrf_delay.h"
 
 
 #define DEAD_BEEF 0xDEADBEEF /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
@@ -109,37 +112,53 @@ void idle_state_handle(void) {
 int main(void) {
     bool erase_bonds;
 
-    //general inits
+    // general inits
     log_init();
     power_management_init();
     application_timers_start();
     timers_init();
 
 
-    //ble inits
+    // ble inits
     ble_stack_init();
     gap_params_init();
     gatt_init();
-
     services_init();
     advertising_init();
-
     conn_params_init();
     peer_manager_init();
 
 
-    //saadc inits
+    // saadc inits
+    //lfclk_config();
     saadc_init();
     saadc_sampling_event_init();
 
 
     // Start execution.
-    NRF_LOG_INFO("LogiSteps started.");
+    //NRF_LOG_INFO("LogiSteps started.");
     advertising_start(erase_bonds);
     saadc_sampling_event_enable();
 
+
+    // testing
+    nrf_gpio_cfg_output(7);
+    nrf_gpio_pin_clear(7);
+    //nrf_delay_ms(10000);
+    //nrf_gpio_pin_toggle(7);
+
+    
     // Enter main loop.
     for (;;) {
-        idle_state_handle();
+        //NRF_LOG_INFO("Starting WFE/pwrmngmt.");
+        //__WFE();
+        nrf_pwr_mgmt_run();
+        //NRF_LOG_INFO("Left WFE/pwrmngmt.");
+
+        //NRF_LOG_INFO("Entering 'sleep' mode.");   //sleep = off mode
+        //sleep_mode_enter();
+
+        //sd_app_evt_wait();
+        //idle_state_handle();
     }
 }

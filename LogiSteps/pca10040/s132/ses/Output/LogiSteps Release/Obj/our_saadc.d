@@ -1,6 +1,6 @@
 Output/LogiSteps\ Release/Obj/our_saadc.o: \
- C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_saadc.c \
- C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_saadc.h \
+ C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_saadc.c \
+ C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_saadc.h \
  ../../../../../../integration/nrfx/legacy/nrf_drv_saadc.h \
  ../../../../../../modules/nrfx/drivers/include/nrfx_saadc.h \
  ../../../../../../modules/nrfx/nrfx.h \
@@ -54,9 +54,9 @@ Output/LogiSteps\ Release/Obj/our_saadc.o: \
  ../../../../../../integration/nrfx/legacy/nrf_drv_ppi.h \
  ../../../../../../modules/nrfx/drivers/include/nrfx_ppi.h \
  ../../../../../../modules/nrfx/hal/nrf_ppi.h \
- ../../../../../../integration/nrfx/legacy/nrf_drv_timer.h \
- ../../../../../../modules/nrfx/drivers/include/nrfx_timer.h \
- ../../../../../../modules/nrfx/hal/nrf_timer.h \
+ ../../../../../../integration/nrfx/legacy/nrf_drv_rtc.h \
+ ../../../../../../modules/nrfx/drivers/include/nrfx_rtc.h \
+ ../../../../../../modules/nrfx/hal/nrf_rtc.h \
  ../../../../../../components/libraries/log/nrf_log.h \
  ../../../../../../components/libraries/util/sdk_common.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/string.h \
@@ -69,7 +69,7 @@ Output/LogiSteps\ Release/Obj/our_saadc.o: \
  ../../../../../../components/libraries/log/nrf_log_instance.h \
  ../../../../../../components/libraries/log/nrf_log_types.h \
  ../../../../../../components/libraries/log/nrf_log_types.h \
- C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_ble.h \
+ C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_ble.h \
  ../../../../../../components/softdevice/s132/headers/ble.h \
  ../../../../../../components/softdevice/s132/headers/ble_err.h \
  ../../../../../../components/softdevice/s132/headers/ble_gap.h \
@@ -103,4 +103,5 @@ Output/LogiSteps\ Release/Obj/our_saadc.o: \
  ../../../../../../components/ble/peer_manager/peer_manager_internal.h \
  ../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.h \
  ../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.h \
- ../../../../../../components/ble/common/ble_srv_common.h
+ ../../../../../../components/ble/common/ble_srv_common.h \
+ ../../../../../../modules/nrfx/hal/nrf_gpio.h
