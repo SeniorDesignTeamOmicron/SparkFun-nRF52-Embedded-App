@@ -1,6 +1,6 @@
 Output/LogiSteps\ Release/Obj/our_saadc.o: \
- C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_saadc.c \
- C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_saadc.h \
+ C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_saadc.c \
+ C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_saadc.h \
  ../../../../../../integration/nrfx/legacy/nrf_drv_saadc.h \
  ../../../../../../modules/nrfx/drivers/include/nrfx_saadc.h \
  ../../../../../../modules/nrfx/nrfx.h \
@@ -69,7 +69,7 @@ Output/LogiSteps\ Release/Obj/our_saadc.o: \
  ../../../../../../components/libraries/log/nrf_log_instance.h \
  ../../../../../../components/libraries/log/nrf_log_types.h \
  ../../../../../../components/libraries/log/nrf_log_types.h \
- C:\nRF5_SDK_15.2.0\examples\MyStuff\LogiStepsTesting\our_ble.h \
+ C:\nRF5_SDK_15.2.0\examples\SparkFun-nRF52-Embedded-App\LogiSteps\our_ble.h \
  ../../../../../../components/softdevice/s132/headers/ble.h \
  ../../../../../../components/softdevice/s132/headers/ble_err.h \
  ../../../../../../components/softdevice/s132/headers/ble_gap.h \

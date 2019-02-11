@@ -5,8 +5,10 @@
 
 #define SAMPLES_IN_BUFFER 1
 
-#define RTC_FREQUENCY 4095              //Determines the RTC frequency and prescaler
-#define COMPARE_COUNTERTIME  (1UL)      //Get Compare event COMPARE_TIME seconds after the counter starts from 0.
+//The RTC ticks 32768 times per second, prescaler can be set from 0 to 4095 (2^12)
+//max prescaler at 4095 means the rtc interrupt fires every 0.125ms or 8 times per second
+#define rtc_prescaler 4095   //Value to set prescaler to, determines frequency of rtc
+#define rtc_cc        8      //Get compare event after this many cycles of the rtc count
 
 
 static const nrf_drv_rtc_t   m_rtc = NRF_DRV_RTC_INSTANCE(2);  // RTC to be used with saadc
@@ -66,12 +68,12 @@ void saadc_sampling_event_init(void) {
 
     //Init rtc
     nrf_drv_rtc_config_t rtc_config = NRF_DRV_RTC_DEFAULT_CONFIG;
-    rtc_config.prescaler = RTC_FREQUENCY;
+    rtc_config.prescaler = rtc_prescaler;
     err_code = nrf_drv_rtc_init(&m_rtc, &rtc_config, rtc_handler);
     APP_ERROR_CHECK(err_code);
 
     //Set compare channel 2 to trigger 
-    err_code = nrf_drv_rtc_cc_set(&m_rtc,2,COMPARE_COUNTERTIME * 8,false);
+    err_code = nrf_drv_rtc_cc_set(&m_rtc,2, rtc_cc,false);
     APP_ERROR_CHECK(err_code);
 
     //nrf_drv_rtc_tick_enable(&m_rtc, true);
