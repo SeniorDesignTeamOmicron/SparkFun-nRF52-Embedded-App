@@ -1,11 +1,11 @@
 Output/LogiSteps\ Release/Obj/nrf_atfifo.o: \
- C:\nRF5_SDK_15.2.0\components\libraries\atomic_fifo\nrf_atfifo.c \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/string.h \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/__crossworks.h \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stdint.h \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stdbool.h \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/atomic_fifo/nrf_atfifo.c \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/string.h \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/__crossworks.h \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/stdint.h \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/stdbool.h \
  ../../../../../../components/libraries/util/app_util.h \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stddef.h \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/stddef.h \
  ../../../../../../modules/nrfx/mdk/compiler_abstraction.h \
  ../../../../../../components/libraries/util/nordic_common.h \
  ../../../../../../modules/nrfx/mdk/nrf.h \
@@ -20,7 +20,7 @@ Output/LogiSteps\ Release/Obj/nrf_atfifo.o: \
  ../../../../../../modules/nrfx/mdk/nrf51_to_nrf52.h \
  ../../../../../../modules/nrfx/mdk/nrf52_name_change.h \
  ../../../../../../modules/nrfx/mdk/compiler_abstraction.h \
- C:\nRF5_SDK_15.2.0\components\libraries\atomic_fifo\nrf_atfifo.h \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/atomic_fifo/nrf_atfifo.h \
  ../config/sdk_config.h \
  ../../../../../../components/libraries/util/nordic_common.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
@@ -29,7 +29,7 @@ Output/LogiSteps\ Release/Obj/nrf_atfifo.o: \
  ../../../../../../components/libraries/log/nrf_log_instance.h \
  ../../../../../../components/libraries/experimental_section_vars/nrf_section.h \
  ../../../../../../components/libraries/log/nrf_log_types.h \
- C:\nRF5_SDK_15.2.0\components\libraries\atomic_fifo\nrf_atfifo_internal.h \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/atomic_fifo/nrf_atfifo_internal.h \
  ../../../../../../components/libraries/log/nrf_log.h \
  ../../../../../../components/libraries/util/sdk_common.h \
  ../../../../../../components/libraries/util/sdk_os.h \
@@ -37,6 +37,5 @@ Output/LogiSteps\ Release/Obj/nrf_atfifo.o: \
  ../../../../../../components/libraries/util/app_util.h \
  ../../../../../../components/libraries/util/sdk_macros.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
- ../../../../../../components/libraries/strerror/nrf_strerror.h \
  ../../../../../../components/libraries/log/src/nrf_log_internal.h \
  ../../../../../../components/libraries/log/nrf_log_types.h

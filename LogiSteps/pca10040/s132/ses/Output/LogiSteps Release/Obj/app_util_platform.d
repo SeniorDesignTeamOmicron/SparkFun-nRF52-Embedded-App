@@ -1,7 +1,7 @@
 Output/LogiSteps\ Release/Obj/app_util_platform.o: \
- C:\nRF5_SDK_15.2.0\components\libraries\util\app_util_platform.c \
- C:\nRF5_SDK_15.2.0\components\libraries\util\app_util_platform.h \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stdint.h \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/util/app_util_platform.c \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/util/app_util_platform.h \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/stdint.h \
  ../../../../../../modules/nrfx/mdk/compiler_abstraction.h \
  ../../../../../../modules/nrfx/mdk/nrf.h \
  ../../../../../../modules/nrfx/mdk/nrf52.h \
@@ -20,12 +20,12 @@ Output/LogiSteps\ Release/Obj/app_util_platform.o: \
  ../../../../../../components/softdevice/s132/headers/nrf_error.h \
  ../../../../../../components/softdevice/s132/headers/nrf_error_soc.h \
  ../../../../../../components/softdevice/s132/headers/nrf_nvic.h \
- C:\nRF5_SDK_15.2.0\components\libraries\util\nrf_assert.h \
- C:\nRF5_SDK_15.2.0\components\libraries\util\app_error.h \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stdio.h \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/__crossworks.h \
- C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.10/include/stdbool.h \
- C:\nRF5_SDK_15.2.0\components\libraries\util\sdk_errors.h \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/util/nrf_assert.h \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/util/app_error.h \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/stdio.h \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/__crossworks.h \
+ /Applications/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.12/include/stdbool.h \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/util/sdk_errors.h \
  ../../../../../../components/softdevice/s132/headers/nrf_error.h \
- C:\nRF5_SDK_15.2.0\components\libraries\util\nordic_common.h \
- C:\nRF5_SDK_15.2.0\components\libraries\util\app_error_weak.h
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/util/nordic_common.h \
+ /Users/guntherhuebler/Development/nRF52/SDK_15.2.0/components/libraries/util/app_error_weak.h
