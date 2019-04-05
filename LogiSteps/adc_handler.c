@@ -143,7 +143,7 @@ void fsr_sample_isr(nrf_drv_saadc_evt_t const* p_event) {
     int16_t data = p_event->data.done.p_buffer[0];
     our_characteristic_update(&m_our_service, 2, &data, m_our_service.data_handle);
 
-    printf("ADC: %f, %f, %f\n",temp0,temp1,temp2);
+    //printf("ADC: %f, %f, %f\n",temp0,temp1,temp2);
 
     if (temp2 > 2.5 ) {
 
