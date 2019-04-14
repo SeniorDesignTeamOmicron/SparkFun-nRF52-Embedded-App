@@ -18,6 +18,11 @@
 extern ble_os_t m_our_service;
 
 
+uint8_t sample_index = 0;
+uint8_t front_buffer[15] = { 0x00 };
+uint8_t back_buffer[15] = { 0x00 };
+
+
 void adc_rtc_config() {
 
   //initialize clock rtc uses
@@ -44,22 +49,12 @@ void adc_rtc_config() {
   channel_1_config.pin_p      = (nrf_saadc_input_t)(NRF_SAADC_INPUT_AIN2);
   channel_1_config.pin_n      = NRF_SAADC_INPUT_DISABLED;
 
-  //define configuration for saadc channel 2
-  channel_2_config.resistor_p = NRF_SAADC_RESISTOR_DISABLED;
-  channel_2_config.resistor_n = NRF_SAADC_RESISTOR_DISABLED;
-  channel_2_config.gain       = NRF_SAADC_GAIN1_6;
-  channel_2_config.reference  = NRF_SAADC_REFERENCE_INTERNAL;
-  channel_2_config.acq_time   = NRF_SAADC_ACQTIME_20US;
-  channel_2_config.mode       = NRF_SAADC_MODE_SINGLE_ENDED;
-  channel_2_config.pin_p      = (nrf_saadc_input_t)(NRF_SAADC_INPUT_AIN3);
-  channel_2_config.pin_n      = NRF_SAADC_INPUT_DISABLED;
 
+  //configure gpio pins for output, used to power fsrs
   nrf_gpio_cfg_output(25);
   nrf_gpio_pin_toggle(25);
   nrf_gpio_cfg_output(26);
   nrf_gpio_pin_toggle(26);
-  nrf_gpio_cfg_output(27);
-  nrf_gpio_pin_toggle(27);
 
 }
 
@@ -88,18 +83,18 @@ void saadc_init() {
   //set channels, setting multiple enables compare mode
   nrf_drv_saadc_channel_init(1, &channel_0_config);
   nrf_drv_saadc_channel_init(2, &channel_1_config);
-  nrf_drv_saadc_channel_init(3, &channel_2_config);
 
   //set up buffer for DMA
   nrf_drv_saadc_buffer_convert(adc_buffer_pool[0], saadc_channels);
 }
+
 
 void rtc_callback(nrf_drv_rtc_int_type_t int_type) {
 
     //if rtc compare value reached
     if (int_type == NRF_DRV_RTC_INT_COMPARE2) {
 
-        fsr_inCap_power_on();
+        fsr_power_on();
                     
         //initialize the saadc and start the scan sample
         saadc_init();
@@ -111,106 +106,99 @@ void rtc_callback(nrf_drv_rtc_int_type_t int_type) {
     }
 }
 
-extern float temp0 = 0;
-extern float temp1 = 0;
-extern float temp2 = 0;
-extern float temp3 = 0;
-extern float temp4 = 0;
 
 void fsr_sample_isr(nrf_drv_saadc_evt_t const* p_event) {
-
-  //nrf_gpio_pin_toggle(7);
 
   if (p_event->type == NRF_DRV_SAADC_EVT_DONE) {
     
     //turn off fsr power
-    fsr_inCap_power_off();
+    fsr_power_off();
 
     //convert saadc buffer values
     nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, saadc_channels);
   
-    //TESTING CODE SAVE THE VALUES
-    temp0 = (float)(p_event->data.done.p_buffer[0]) / 255.0 * 3.6 ;
-    temp1 = (float)(p_event->data.done.p_buffer[1]) / 255.0 * 3.6 ;
-    temp2 = (float)(p_event->data.done.p_buffer[2]) / 255.0 * 3.6 ;
-
     //uninitialize the adc to turn off DMA to conserve power
     nrf_drv_saadc_uninit();
 
-    set_sample_rate_constant_curve( temp0, temp1, temp2 );
-    //set_sample_rate_exp_decay( temp0, temp1, temp2 );
+    //save adc valies
+    uint8_t fsr1Int = (uint8_t)p_event->data.done.p_buffer[0];
+    uint8_t fsr2Int = (uint8_t)p_event->data.done.p_buffer[1];
+    
+    //ensure fsr values cant be slightly negative
+    if( fsr1Int > 255 ) fsr1Int = 0;  
+    if( fsr2Int > 255 ) fsr2Int = 0;
 
-    int16_t data = p_event->data.done.p_buffer[0];
-    our_characteristic_update(&m_our_service, 2, &data, m_our_service.data_handle);
+    //recalculate sample rate based on fsr values
+    set_sample_rate_constant_curve( fsr1Int, fsr2Int );
 
-    //printf("ADC: %f, %f, %f\n",temp0,temp1,temp2);
+    //save and get ready to send data
+    handle_fsr_data( fsr1Int, fsr2Int );
 
-    if (temp2 > 2.5 ) {
-
-      //test();
-    }
   }
 }
-
-
-void fsr_inCap_power_on() {
-  nrf_gpio_pin_set(25);  //supply voltage to fsr1                      (D25/P2)
-  nrf_gpio_pin_set(26);  //supply voltage to fsr2                      (D26/P3)
-  nrf_gpio_pin_set(27);  //power on mosfet to measure input capacitor  (D27/P4)
-} 
-
-void fsr_inCap_power_off() {
-  nrf_gpio_pin_clear(25);  //zero voltage to fsr1
-  //nrf_gpio_pin_clear(26);  //zero voltage to fsr2
-  nrf_gpio_pin_clear(27);  //power off mosfet to measure input capacitor
-}
-
-
 
 
 #define max( a, b ) ( ((a) > (b)) ? (a) : (b) )
-#define min( a, b ) ( ((a) > (b)) ? (b) : (a) )
+void set_sample_rate_constant_curve( uint8_t fsr1Int, uint8_t fsr2Int ) {
 
+  //convert fsr values to floats
+  float fsr1 = (float)(fsr1Int) / 255.0 * 3.6 ;
+  float fsr2 = (float)(fsr2Int) / 255.0 * 3.6 ;
 
-extern float temp5 = 0;
+  //TESTING CODE SAVE THE VALUES
+  printf("ADC: %d, %d\n",fsr1Int,fsr2Int);
+  //printf("ADC: %f, %f\n",fsr1,fsr2);
 
-void set_sample_rate_constant_curve( float fsr1, float fsr2, float in_cap ) {
-
-  float fsr = max( temp0, temp1 );
-
-  rtc_cc = (int)( max_sample_freq_hz / ( min_sample_freq_hz + fsr_voltage_multiplier \
-                  * (max(fsr,step_voltage_threshold) - step_voltage_threshold ) ) );
-
-  temp5 = rtc_cc;
-  
-  if( rtc_cc < 1 ) {
+  //if one of the fsrs is above the treshold, start taking samples more often
+  if( max( fsr1, fsr2 ) > step_voltage_threshold ) {
     rtc_cc = 1;
+  } else { 
+    //otherwise drop back down to minimum sample rate
+    rtc_cc = max_sample_freq_hz / min_sample_freq_hz;
+  }
+}
+
+
+void handle_fsr_data( uint8_t front_val, uint8_t back_val ) {
+
+  //save fsr values, if sample rate is low, copy them so buffer is full before ble transmit
+  for( int i = 0; i < rtc_cc; i++ ) {
+    front_buffer[(sample_index + i) % 15] = front_val;
+    back_buffer[(sample_index + i) % 15]  = back_val;
+  }
+
+  //calcula sample index based on sampling frequency, at max rtc_cc = 1, at min rtc_cc = min/max
+  sample_index = sample_index + rtc_cc;
+
+  //if the sample index has past its max, the buffer is full, update characteristics, and reset sample index and buffers
+  if( sample_index >= 15 ) {
+      our_characteristic_update(&m_our_service, 15, &front_buffer[0], m_our_service.front_handle);
+      our_characteristic_update(&m_our_service, 15, &back_buffer[0], m_our_service.back_handle);
+      sample_index %= 15;
+      memset(front_buffer, 0, 15);
+      memset(back_buffer, 0, 15);
   }
 
 }
 
 
-extern float temp6 = 0;
-extern float temp7 = 0;
-extern float temp8 = 0;
-
-void set_sample_rate_exp_decay( float fsr1, float fsr2, float in_cap ) {
-
-  float fsr = max( max( temp0, temp1 ) - step_voltage_threshold, 0.0 );
-
-  fsr_avg = fsr_avg * alpha + fsr * (1.0 - alpha);
-
-  float mult = fabs(fsr_avg - fsr) / (fsr_max_voltage-step_voltage_threshold);
-
-  float fsr_diff = min_sample_freq_hz + (max_sample_freq_hz - min_sample_freq_hz) * mult;
-
-  rtc_cc = (int)( max_sample_freq_hz / fsr_diff );
-
-  temp5 = rtc_cc;
-
-  
-  if( rtc_cc < 1 ) {
-    rtc_cc = 1;
-  }
-
+void startADC() {
+    adc_rtc_config(); //configure values, only needs to be done once
+    init_rtc();       //start rtc, technically starts adc too
 }
+
+void stopADC() {
+  nrf_drv_rtc_disable(&rtc_2);  //disable rtc
+  nrf_drv_saadc_uninit(); //diable adc
+}
+
+void fsr_power_on() {
+  nrf_gpio_pin_set(25);  //supply voltage to fsr1 (D25/P2)
+  nrf_gpio_pin_set(26);  //supply voltage to fsr2 (D26/P3)
+} 
+
+void fsr_power_off() {
+  nrf_gpio_pin_clear(25);  //zero voltage to fsr1
+  nrf_gpio_pin_clear(26);  //zero voltage to fsr2
+}
+

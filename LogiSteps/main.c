@@ -55,61 +55,21 @@
 #include <stdint.h>
 #include <string.h>
 
-
-#include "nrf_gpio.h"
 #include "nrf_pwr_mgmt.h"
 #include "adc_handler.h"
 #include "ble_handler.h"
 
-
-#include "nrf_log.h"
-#include "nrf_log_ctrl.h"
-#include "nrf_log_default_backends.h"
-
 ble_os_t m_our_service;
-
-void test() {
-
-    /*app_timer_init();
-    ble_stack_init();
-    //sd_power_dcdc_mode_set(NRF_POWER_DCDC_ENABLE);
-    gap_params_init();
-    gatt_init();
-
-    services_init();
-    advertising_init();
-    conn_params_init();
-    peer_manager_init();*/
-
-
-    advertising_start();
-  
-
-}
-
 
 
 int main(void) {
 
     nrf_pwr_mgmt_init();
+  
+    startBLE();
 
-    app_timer_init();
-    ble_stack_init();
-    gap_params_init();
-    gatt_init();
-    services_init();
-    advertising_init();
-    conn_params_init();
-    peer_manager_init();
-
-    advertising_start();
-    
-    adc_rtc_config();
-    init_rtc();
-
-
-     for (;;) {
-        nrf_pwr_mgmt_run();
-     }
+    for (;;) { 
+      nrf_pwr_mgmt_run();
+    }
 
 }

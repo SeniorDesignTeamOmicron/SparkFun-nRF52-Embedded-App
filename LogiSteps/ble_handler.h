@@ -21,8 +21,8 @@
 // Define 16-bit service UUID
 #define BLE_UUID_OUR_SERVICE_UUID                 0x0000 
 // Define 16-bit characteristic UUIDS
-#define BLE_UUID_DATA_CHARACTERISTIC_UUID         0x1111
-#define BLE_UUID_TIME_CHARACTERISTIC_UUID         0x2222 
+#define BLE_UUID_FRONT_CHARACTERISTIC_UUID        0x1111
+#define BLE_UUID_BACK_CHARACTERISTIC_UUID         0x2222 
 
 /**@brief Function for starting advertising.
  *
@@ -144,8 +144,8 @@ typedef struct {
     // Handle for the service (provided by BLE stack)
     uint16_t                    service_handle; 
     // Handles for the characteristics of our service
-    ble_gatts_char_handles_t    data_handle;
-    ble_gatts_char_handles_t    time_handle;
+    ble_gatts_char_handles_t    front_handle;
+    ble_gatts_char_handles_t    back_handle;
 }ble_os_t;
 
 

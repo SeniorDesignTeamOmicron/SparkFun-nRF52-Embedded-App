@@ -12,11 +12,8 @@ extern ble_os_t m_our_service;
 #define DEVICE_NAME                     "LogiStepsEmbedded"              /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "LogiSteps"                      /**< Manufacturer. Will be passed to Device Information Service. */
 
-#define APP_ADV_FAST_INTERVAL           2400                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 25 ms). */
-#define APP_ADV_SLOW_INTERVAL           3200                                        /**< Slow advertising interval (in units of 0.625 ms. This value corresponds to 2 seconds). */
-
-#define APP_ADV_FAST_DURATION           1600                                        /**< The advertising duration of fast advertising in units of 10 milliseconds. */
-#define APP_ADV_SLOW_DURATION           18000                                       /**< The advertising duration of slow advertising in units of 10 milliseconds. */
+#define APP_ADV_FAST_INTERVAL           2400                             /**< The advertising interval (in units of 0.625 ms. This value corresponds to 1500 ms). */
+#define APP_ADV_FAST_DURATION           0                                /**< < The advertising duration of fast advertising in units of 10 milliseconds. 0 means infinite*/
 
 #define APP_BLE_OBSERVER_PRIO           3                                /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                /**< A tag identifying the SoftDevice BLE configuration. */
@@ -26,9 +23,9 @@ extern ble_os_t m_our_service;
 #define SLAVE_LATENCY                   0                                /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)  /**< Connection supervisory timeout (4 seconds). */
 
-#define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(500)            /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
-#define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(30000)           /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
-#define MAX_CONN_PARAMS_UPDATE_COUNT    10                                /**< Number of attempts before giving up the connection parameter negotiation. */
+#define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(50)              /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
+#define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(100)             /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
+#define MAX_CONN_PARAMS_UPDATE_COUNT    50                               /**< Number of attempts before giving up the connection parameter negotiation. */
 
 #define SEC_PARAM_BOND                  1                                /**< Perform bonding. */
 #define SEC_PARAM_MITM                  0                                /**< Man In The Middle protection not required. */
@@ -56,10 +53,12 @@ static ble_uuid_t m_adv_uuids[] = {
 
 //============================================== INITIALIZATIONS ==============================================
 
+
 /**@brief Function for initializing the GATT module.
  */
 void gatt_init(void) {
-    nrf_ble_gatt_init(&m_gatt, NULL);
+  nrf_ble_gatt_init(&m_gatt, NULL);
+
 }
 
 
@@ -136,9 +135,6 @@ void ble_stack_init(void) {
     // Enable BLE stack.
     nrf_sdh_ble_enable(&ram_start);
 
-    // Register a handler for BLE events.
-    NRF_SDH_BLE_OBSERVER(m_ble_observer, APP_BLE_OBSERVER_PRIO, ble_evt_handler, NULL);
-
     //OUR_JOB: Step 3.C Call ble_our_service_on_ble_evt() to do housekeeping of ble connections related to our service and characteristics
     NRF_SDH_BLE_OBSERVER(m_our_service_observer, APP_BLE_OBSERVER_PRIO, ble_our_service_on_ble_evt, (void*) &m_our_service);       
 }
@@ -165,9 +161,6 @@ void advertising_init(void) {
     init.config.ble_adv_fast_enabled  = true;
     init.config.ble_adv_fast_interval = APP_ADV_FAST_INTERVAL;
     init.config.ble_adv_fast_timeout  = APP_ADV_FAST_DURATION;
-    init.config.ble_adv_slow_enabled  = true;
-    init.config.ble_adv_slow_interval = APP_ADV_SLOW_INTERVAL;
-    init.config.ble_adv_slow_timeout  = APP_ADV_SLOW_DURATION;
 
     init.evt_handler = on_adv_evt;
 
@@ -246,10 +239,10 @@ void our_service_init(ble_os_t* p_our_service) {
                                         &p_our_service->service_handle);
     
     // Add our characteristics
-    uint8_t val[4] = {0x00, 0x00, 0x00, 0x00};
-    our_characteristic_add(p_our_service, BLE_UUID_TIME_CHARACTERISTIC_UUID, 4, val, &p_our_service->time_handle);
-    uint8_t val2[2] = {0x00, 0x00};//, 0x00, 0x00,0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00};
-    our_characteristic_add(p_our_service, BLE_UUID_DATA_CHARACTERISTIC_UUID, 2, val2, &p_our_service->data_handle);
+    uint8_t front_buffer[15] = {0x00};
+    our_characteristic_add(p_our_service, BLE_UUID_FRONT_CHARACTERISTIC_UUID, 15, front_buffer, &p_our_service->front_handle);
+    uint8_t back_buffer[15] = {0x00};
+    our_characteristic_add(p_our_service, BLE_UUID_BACK_CHARACTERISTIC_UUID, 15, back_buffer, &p_our_service->back_handle);
 }
 
 
@@ -413,24 +406,28 @@ void on_adv_evt(ble_adv_evt_t ble_adv_evt) {
 }
 
 
-/**@brief Function for handling BLE events.
+/**@brief Function for handling BLE Stack events related to our service and characteristic.
  *
- * @param[in]   p_ble_evt   Bluetooth stack event.
- * @param[in]   p_context   Unused.
+ * @details Handles all events from the BLE stack of interest to Our Service.
+ *
+ * @param[in]   p_context   Our Service structure.
+ * @param[in]   p_ble_evt       Event received from the BLE stack.
  */
-void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context) {
+void ble_our_service_on_ble_evt(ble_evt_t const* p_ble_evt, void* p_context) {
 
+    ble_os_t* p_our_service = (ble_os_t*) p_context;  
+
+    // Handle BLE events related to our service. 
     switch (p_ble_evt->header.evt_id) {
-
-        case BLE_GAP_EVT_DISCONNECTED:
-            break;
-
         case BLE_GAP_EVT_CONNECTED:
-            m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-            nrf_ble_qwr_conn_handle_assign(&m_qwr, m_conn_handle);
-
+            startADC();
+            p_our_service->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
-
+        case BLE_GAP_EVT_DISCONNECTED:
+            stopADC();
+            printf("Disconnected");
+            p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
+            break;
         case BLE_GAP_EVT_PHY_UPDATE_REQUEST:
         {
             ble_gap_phys_t const phys =
@@ -453,33 +450,11 @@ void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context) {
                                   BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
             break;
 
-        default:
+        case BLE_GATTS_EVT_HVN_TX_COMPLETE:
+            //ble transmit has just finished
+            //just in case we wanna do something with this event
             break;
-    }
 
-		
-}
-
-
-/**@brief Function for handling BLE Stack events related to our service and characteristic.
- *
- * @details Handles all events from the BLE stack of interest to Our Service.
- *
- * @param[in]   p_context   Our Service structure.
- * @param[in]   p_ble_evt       Event received from the BLE stack.
- */
-void ble_our_service_on_ble_evt(ble_evt_t const* p_ble_evt, void* p_context) {
-
-    ble_os_t* p_our_service = (ble_os_t*) p_context;  
-
-    // Handle BLE events related to our service. 
-    switch (p_ble_evt->header.evt_id) {
-        case BLE_GAP_EVT_CONNECTED:
-            p_our_service->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-            break;
-        case BLE_GAP_EVT_DISCONNECTED:
-            p_our_service->conn_handle = BLE_CONN_HANDLE_INVALID;
-            break;
         default:
             break;
     }
@@ -513,3 +488,16 @@ void our_characteristic_update(ble_os_t* p_our_service, uint16_t length, int32_t
 }
 
 
+void startBLE() {
+
+    app_timer_init();
+    ble_stack_init();
+    gap_params_init();
+    gatt_init();
+    services_init();
+    advertising_init();
+    conn_params_init();
+    peer_manager_init();
+
+    advertising_start();
+}
